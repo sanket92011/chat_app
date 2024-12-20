@@ -124,12 +124,11 @@ class _LoginPageState extends State<LoginPage> {
                 .getUserName(emailController.text.trim());
         HelperFunction.isUserLoggedIn(true);
         HelperFunction.saveUserEmail(emailController.text.trim());
-        HelperFunction.saveUserName(passwordController.text.trim());
-        HelperFunction.saveUserEmail(snapshot.docs[0]['name']);
+        HelperFunction.saveUserName(snapshot.docs[0]['name']);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const HomePage(),
+              builder: (context) => HomePage(),
             ));
       } else {
         setState(() {

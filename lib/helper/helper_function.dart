@@ -34,4 +34,14 @@ class HelperFunction {
     SharedPreferences spf = await SharedPreferences.getInstance();
     return spf.getBool(isDarkTheme);
   }
+
+  static Future<String?> getUserName() async {
+    SharedPreferences spf = await SharedPreferences.getInstance();
+    return spf.getString(userNameKey);
+  }
+
+  static Future<String?> getUserEmail() async {
+    SharedPreferences spf = await SharedPreferences.getInstance();
+    return spf.getString(userEmailKey);
+  }
 }

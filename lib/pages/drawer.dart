@@ -1,3 +1,10 @@
+import 'package:chatapp/helper/helper_function.dart';
+import 'package:chatapp/pages/auth/login_page.dart';
+import 'package:chatapp/pages/home_page.dart';
+import 'package:chatapp/pages/profile_page.dart';
+import 'package:chatapp/service/auth_services.dart';
+import 'package:chatapp/service/database_service.dart';
+import 'package:chatapp/widgets/drawer_item.dart';
 import 'package:flutter/material.dart';
 
 class SideDrawer extends StatelessWidget {
@@ -7,7 +14,7 @@ class SideDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.75,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0XFFF4770F),
       ),
       child: Stack(
@@ -21,10 +28,20 @@ class SideDrawer extends StatelessWidget {
                 children: [
                   const SizedBox(height: 60),
                   DrawerItem(
+                    useSvg: true,
+                    icon: "assets/images/profile.svg",
                     title: 'Profile',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ));
+                    },
                   ),
                   DrawerItem(
+                    useSvg: false,
+                    iconData: Icons.settings,
                     title: 'Settings',
                     onTap: () {
                       Navigator.of(context).pushNamed('/OrderHistoryPage');
@@ -41,9 +58,17 @@ class SideDrawer extends StatelessWidget {
               child: Row(
                 children: [
                   DrawerItem(
+                    useSvg: false,
+                    iconData: Icons.logout,
                     title: 'Log out',
                     onTap: () {
-                      Navigator.of(context).pushNamed('/OrderHistoryPage');
+                      AuthServices().signOutUser();
+                      HelperFunction.isUserLoggedIn(false);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ));
                     },
                   ),
                 ],
@@ -51,38 +76,6 @@ class SideDrawer extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-    ;
-  }
-}
-
-class DrawerItem extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-
-  const DrawerItem({
-    Key? key,
-    required this.title,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Row(
-          children: [
-            const SizedBox(width: 16),
-            Text(title,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-          ],
-        ),
       ),
     );
   }

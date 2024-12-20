@@ -1,30 +1,50 @@
-import 'package:chatapp/constants.dart';
 import 'package:chatapp/pages/drawer.dart';
-import 'package:chatapp/service/auth_services.dart';
+import 'package:chatapp/pages/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final AdvancedDrawerController drawerController = AdvancedDrawerController();
 
   @override
   Widget build(BuildContext context) {
-    final AdvancedDrawerController drawerController =
-        AdvancedDrawerController();
+    AdvancedDrawerController();
     return AdvancedDrawer(
       openRatio: 0.50,
       openScale: 1,
       rtlOpening: false,
       controller: drawerController,
-      backdropColor: Color(0XFFF4770F),
+      backdropColor: const Color(0XFFF4770F),
       drawer: const SideDrawer(),
       animationCurve: Curves.easeInOut,
       child: Scaffold(
           appBar: AppBar(
-            title: Text("He"),
+            leading: IconButton(
+                onPressed: () {
+                  drawerController.showDrawer();
+                },
+                icon: const Icon(Icons.menu)),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SearchPage(),
+                        ));
+                  },
+                  icon: const Icon(Icons.search_rounded))
+            ],
+            elevation: 0,
+            centerTitle: true,
+            title: const Text(
+              "Chats",
+              style: TextStyle(fontSize: 27),
+            ),
           ),
-          drawer: AdvancedDrawer(child: Column(), drawer: SideDrawer()),
-          body: Column()),
+          body: const Column()),
     );
   }
 }
