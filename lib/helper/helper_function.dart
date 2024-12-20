@@ -44,4 +44,9 @@ class HelperFunction {
     SharedPreferences spf = await SharedPreferences.getInstance();
     return spf.getString(userEmailKey);
   }
+
+  static Future<bool> saveUserThemeChoice(bool isDarkMode) async {
+    SharedPreferences spf = await SharedPreferences.getInstance();
+    return spf.setBool(isDarkTheme, isDarkMode);
+  }
 }

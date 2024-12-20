@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  HomePage({
+    super.key,
+  });
 
   final AdvancedDrawerController drawerController = AdvancedDrawerController();
 

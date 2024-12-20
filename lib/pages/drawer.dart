@@ -2,6 +2,7 @@ import 'package:chatapp/helper/helper_function.dart';
 import 'package:chatapp/pages/auth/login_page.dart';
 import 'package:chatapp/pages/home_page.dart';
 import 'package:chatapp/pages/profile_page.dart';
+import 'package:chatapp/pages/settings.dart';
 import 'package:chatapp/service/auth_services.dart';
 import 'package:chatapp/service/database_service.dart';
 import 'package:chatapp/widgets/drawer_item.dart';
@@ -44,7 +45,9 @@ class SideDrawer extends StatelessWidget {
                     iconData: Icons.settings,
                     title: 'Settings',
                     onTap: () {
-                      Navigator.of(context).pushNamed('/OrderHistoryPage');
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Settings(),
+                      ));
                     },
                   ),
                 ],

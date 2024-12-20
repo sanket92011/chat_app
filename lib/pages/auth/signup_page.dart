@@ -146,7 +146,6 @@ class _LoginPageState extends State<SignupPage> {
         HelperFunction.isUserLoggedIn(true);
         HelperFunction.saveUserEmail(emailController.text.trim());
         HelperFunction.saveUserName(nameController.text.trim());
-
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

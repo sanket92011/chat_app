@@ -57,7 +57,9 @@ class _MyAppState extends State<MyApp> {
   getUserThemeConfiguration() async {
     await HelperFunction.getUserThemeChoice().then((value) {
       if (value != null) {
-        _isDarkTheme = value;
+        setState(() {
+          _isDarkTheme = value;
+        });
       }
     });
   }
