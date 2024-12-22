@@ -49,4 +49,13 @@ class HelperFunction {
     SharedPreferences spf = await SharedPreferences.getInstance();
     return spf.setBool(isDarkTheme, isDarkMode);
   }
+
+  static Future removeUserConfiguration() async {
+    SharedPreferences spf = await SharedPreferences.getInstance();
+
+    spf.remove(userLoggedInKey);
+    spf.remove(userNameKey);
+    spf.remove(userEmailKey);
+    spf.remove(isDarkTheme);
+  }
 }

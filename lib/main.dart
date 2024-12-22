@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _isSignedIn ? HomePage() : const LoginPage(),
+      home: _isSignedIn ? const HomePage() : const LoginPage(),
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(

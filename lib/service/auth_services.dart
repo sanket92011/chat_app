@@ -52,4 +52,23 @@ class AuthServices {
       e.message;
     }
   }
+
+  ///delete
+  Future<void> reAuthenticateAndDelete(String password) async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user != null) {
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: password,
+        );
+
+        await user.reauthenticateWithCredential(credential);
+
+        await user.delete();
+      }
+    } catch (e) {
+      e.toString();
+    }
+  }
 }

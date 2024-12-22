@@ -30,4 +30,22 @@ class DatabaseService {
       e.toString();
     }
   }
+
+  ///deleteUserData
+  Future deleteUserData(String userId) async {
+    try {
+      final collectionRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('sub_collection_name');
+      var snapshots = await collectionRef.get();
+      for (var doc in snapshots.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      e.toString();
+    }
+  }
+
+  ///getAllTheGroups
 }

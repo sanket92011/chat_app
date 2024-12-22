@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var _isLoading = false;
+  bool _isLoading = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   AuthServices authServices = AuthServices();
@@ -78,13 +78,15 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(
-                      text: "Login",
-                      onTap: () {
-                        loginUser();
-                      })),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
+                      width: double.infinity,
+                      child: CustomButton(
+                          text: "Login",
+                          onTap: () {
+                            loginUser();
+                          })),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -130,14 +132,18 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(),
+              builder: (context) => const HomePage(),
             ));
       } else {
         setState(() {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Incorrect email or password")));
+          const SnackBar(
+            content:
+                Text("Incorrect email or password or account may not exist"),
+          ),
+        );
       }
     });
   }
