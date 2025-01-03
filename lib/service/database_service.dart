@@ -48,4 +48,6 @@ class DatabaseService {
   }
 
   ///getAllTheGroups
+
+  ///fetchUse
 }

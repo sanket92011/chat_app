@@ -1,9 +1,13 @@
 import 'package:chatapp/constants.dart';
+import 'package:chatapp/helper/helper_function.dart';
+import 'package:chatapp/pages/call_page.dart';
 import 'package:chatapp/service/chat_services.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:intl/intl.dart';
 
@@ -28,7 +32,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   String formattedTime = "";
   Timestamp lastActiveTime = Timestamp(1, 1);
-
+  String currentUserName = '';
   final TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   late String roomId;
@@ -38,6 +42,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    getUserName();
     roomId = ([widget.currentUserUid, widget.anotherUserUid]..sort()).join('_');
     _chatServices.updateSeenStatus(true, widget.currentUserUid);
   }
@@ -62,39 +67,65 @@ class _ChatPageState extends State<ChatPage> {
                   formattedTime = DateFormat('hh:mm a').format(parsedDateTime);
 
                   return Container(
-                    color: ColorManger.bgColor,
+                    color: Theme.of(context).cardColor,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          Row(
+                          Stack(
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(Icons.arrow_back_ios),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              Row(
                                 children: [
-                                  Text(
-                                    widget.name,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(Icons.arrow_back_ios),
                                   ),
-                                  Text(
-                                    snapshot.data!.data()!['isActive'] == true
-                                        ? "Online"
-                                        : "Last seen at $formattedTime",
-                                    style: const TextStyle(fontSize: 16),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.name,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        snapshot.data!.data()!['isActive'] ==
+                                                true
+                                            ? "Online"
+                                            : "Last seen at $formattedTime",
+                                        style: const TextStyle(fontSize: 16),
+                                      )
+                                    ],
                                   )
                                 ],
-                              )
+                              ),
+                              kIsWeb
+                                  ? SizedBox()
+                                  : Positioned(
+                                      right: 1,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CallPage(
+                                                    callID: roomId,
+                                                    userID:
+                                                        widget.currentUserUid,
+                                                    userName: currentUserName,
+                                                  ),
+                                                ));
+                                          },
+                                          icon: const Icon(Icons.call)),
+                                    )
                             ],
                           ),
                         ],
@@ -141,47 +172,51 @@ class _ChatPageState extends State<ChatPage> {
                       final formattedTime = sentTime != null
                           ? DateFormat('hh:mm a').format(sentTime)
                           : '';
-
-                      return Column(
-                        crossAxisAlignment:
-                            uid == FirebaseAuth.instance.currentUser!.uid
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
-                        children: [
-                          ChatBubble(
-                            clipper: ChatBubbleClipper9(
-                              type:
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment:
+                              uid == FirebaseAuth.instance.currentUser!.uid
+                                  ? CrossAxisAlignment.end
+                                  : CrossAxisAlignment.start,
+                          children: [
+                            ChatBubble(
+                              clipper: ChatBubbleClipper5(
+                                type: uid ==
+                                        FirebaseAuth.instance.currentUser!.uid
+                                    ? BubbleType.sendBubble
+                                    : BubbleType.receiverBubble,
+                              ),
+                              alignment:
                                   uid == FirebaseAuth.instance.currentUser!.uid
-                                      ? BubbleType.sendBubble
-                                      : BubbleType.receiverBubble,
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                              backGroundColor:
+                                  uid == FirebaseAuth.instance.currentUser!.uid
+                                      ? const Color(0XFF005c4b)
+                                      : const Color(0XFF202c33),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    messageFromUser,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    formattedTime,
+                                    style: const TextStyle(
+                                        color: Colors.black, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                              elevation: 10,
+                              shadowColor: Colors.blue.shade50,
                             ),
-                            alignment:
-                                uid == FirebaseAuth.instance.currentUser!.uid
-                                    ? Alignment.centerRight
-                                    : Alignment.centerLeft,
-                            backGroundColor:
-                                uid == FirebaseAuth.instance.currentUser!.uid
-                                    ? const Color(0XFF005c4b)
-                                    : const Color(0XFF202c33),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  messageFromUser,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  formattedTime,
-                                  style: const TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                        ],
+                            const SizedBox(height: 10),
+                          ],
+                        ),
                       );
                     },
                   );
@@ -211,6 +246,9 @@ class _ChatPageState extends State<ChatPage> {
                         ],
                       ),
                       child: TextField(
+                        enableSuggestions: true,
+                        canRequestFocus: true,
+                        maxLines: 1,
                         cursorColor: const Color(0XFFF4770F),
                         controller: messageController,
                         style: TextStyle(
@@ -265,7 +303,6 @@ class _ChatPageState extends State<ChatPage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
-                        // White background for the send button
                         boxShadow: [
                           BoxShadow(
                             color: Colors.blueAccent.withOpacity(0.4),
@@ -286,7 +323,6 @@ class _ChatPageState extends State<ChatPage> {
                 ],
               ),
             ),
-            // Emoji Picker (visible when isEmojiVisible is true)
             if (isEmojiVisible)
               EmojiPicker(
                 onEmojiSelected: (category, emoji) {
@@ -299,5 +335,13 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
     );
+  }
+
+  getUserName() async {
+    return HelperFunction.getUserName().then((value) {
+      setState(() {
+        currentUserName = value!;
+      });
+    });
   }
 }
