@@ -78,12 +78,6 @@ class _ChatPageState extends State<ChatPage> {
                             children: [
                               Row(
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: const Icon(Icons.arrow_back_ios),
-                                  ),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

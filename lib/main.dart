@@ -4,6 +4,8 @@ import 'package:chatapp/helper/helper_function.dart';
 import 'package:chatapp/pages/home_page.dart';
 import 'package:chatapp/pages/auth/login_page.dart';
 import 'package:chatapp/shared/constants.dart';
+import 'package:chatapp/web/pages/auth/login_page.dart';
+import 'package:chatapp/web/pages/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -67,7 +69,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _isSignedIn ? const HomePage() : const LoginPage(),
+      home: _isSignedIn
+          ? kIsWeb
+              ? const WebHomePage()
+              : const HomePage()
+          : kIsWeb
+              ? const WebLoginPage()
+              : const LoginPage(),
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
