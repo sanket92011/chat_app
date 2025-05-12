@@ -7,7 +7,12 @@ buildscript {
         maven { url "https://maven.heytap.com" } // Repository for Oppo Push
         maven { url "https://developer.huawei.com/repo/" } // Huawei
     }
-    ext.kotlin_version = '1.8.0'
+    ext.kotlin_version = '1.9.22'
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.2.1' // ✅ Add this line
+    }
 }
 allprojects {
     repositories {
